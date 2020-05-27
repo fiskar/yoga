@@ -85,28 +85,115 @@ window.addEventListener("DOMContentLoaded", function () {
 
 	//Modal
 
-	let more = document.querySelector('.more'),
-	overlay = document.querySelector('.overlay'),
-	close = document.querySelector('.popup-close'),
-	description= document.querySelectorAll('.description-btn');
+	let more = document.querySelector(".more"),
+		overlay = document.querySelector(".overlay"),
+		close = document.querySelector(".popup-close"),
+		description = document.querySelectorAll(".description-btn");
 
-	more.addEventListener('click', function() {
-		overlay.style.display = 'block';
-		this.classList.add('more-splash');
-		document.body.style.overflow = 'hidden';
+	more.addEventListener("click", function () {
+		overlay.style.display = "block";
+		this.classList.add("more-splash");
+		document.body.style.overflow = "hidden";
 	});
-	close.addEventListener('click', function() {
-		overlay.style.display = 'none';
-		more.classList.remove('more-splash');
-		document.body.style.overflow = '';
+	close.addEventListener("click", function () {
+		overlay.style.display = "none";
+		more.classList.remove("more-splash");
+		document.body.style.overflow = "";
 	});
-	for (let i=0; i<description.length; i++) {
-		description[i].addEventListener('click', function() {
-			overlay.style.display = 'block';
-			this.classList.add('more-splash');
-			document.body.style.overflow = 'hidden';
+	for (let i = 0; i < description.length; i++) {
+		description[i].addEventListener("click", function () {
+			overlay.style.display = "block";
+			this.classList.add("more-splash");
+			document.body.style.overflow = "hidden";
 		});
 	}
-	
-	
+
+	///Form
+
+	let message = {
+		loading: "Загрузка...",
+		success: "Спасибо! Скоро мы свами свяжемся!",
+		failure: "Что-то пошло не так...",
+	};
+
+	let form = document.querySelector(".main-form"),
+		modalInput = form.getElementsByTagName("input"),
+		statusMessage = document.createElement("div");
+
+	statusMessage.classList.add("status");
+
+	form.addEventListener("submit", function (event) {
+		event.preventDefault();
+		form.append(statusMessage);
+
+		let request = new XMLHttpRequest();
+		request.open("POST", "server.php");
+		request.setRequestHeader(
+			"Content-Type",
+			"application/application/json; charser=utf-8"
+		);
+
+		let formData = new FormData(form),
+			obj = {};
+		formData.forEach(function (value, key) {
+			obj[key] = value;
+		});
+		let json = JSON.stringify(obj);
+
+		request.send(json);
+
+		request.addEventListener("readystatechange", function () {
+			if (request.readyState < 4) {
+				statusMessage.innerHTML = message.loading;
+			} else if (request.readyState === 4 && request.status == 200) {
+				statusMessage.innerHTML = message.success;
+			} else {
+				statusMessage.innerHTML = message.failure;
+			}
+		});
+
+		for (let i = 0; i < modalInput.length; i++) {
+			modalInput[i].value = "";
+		}
+	});
+
+	/// Contacts
+
+	let contact = document.querySelector("#form"),
+		contactInputs = contact.getElementsByTagName("input");
+
+	contact.addEventListener("submit", function (event) {
+		event.preventDefault();
+		contact.append(statusMessage);
+
+		let request = new XMLHttpRequest();
+		request.open("POST", "server.php");
+		request.setRequestHeader(
+			"Content-Type",
+			"application/application/json; charser=utf-8"
+		);
+
+		let formData = new FormData(contact),
+			obj = {};
+		formData.forEach(function (value, key) {
+			obj[key] = value;
+		});
+		let json = JSON.stringify(obj);
+
+		request.send(json);
+
+		request.addEventListener("readystatechange", function () {
+			if (request.readyState < 4) {
+				statusMessage.innerHTML = message.loading;
+			} else if (request.readyState === 4 && request.status == 200) {
+				statusMessage.innerHTML = message.success;
+			} else {
+				statusMessage.innerHTML = message.failure;
+			}
+		});
+
+		for (let i = 0; i < contactInputs.length; i++) {
+			contactInputs[i].value = "";
+		}
+	});
 });
